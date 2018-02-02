@@ -3,6 +3,7 @@
 """ Tablib - JSON Support
 """
 import decimal
+import uuid
 
 import tablib
 
@@ -15,8 +16,8 @@ title = 'json'
 extensions = ('json', 'jsn')
 
 
-def date_handler(obj):
-    if isinstance(obj, decimal.Decimal):
+def default_handler(obj):
+    if isinstance(obj, decimal.Decimal) or isinstance(obj, uuid.UUID):
         return str(obj)
     elif hasattr(obj, 'isoformat'):
         return obj.isoformat()
@@ -27,12 +28,12 @@ def date_handler(obj):
 
 def export_set(dataset):
     """Returns JSON representation of Dataset."""
-    return json.dumps(dataset.dict, default=date_handler)
+    return json.dumps(dataset.dict, default=default_handler)
 
 
 def export_book(databook):
     """Returns JSON representation of Databook."""
-    return json.dumps(databook._package(), default=date_handler)
+    return json.dumps(databook._package(), default=default_handler)
 
 
 def import_set(dset, in_stream):
